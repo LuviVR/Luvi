@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Luv Games | Pick a game</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--deep:#2b1b5c;--night:#1a1236;--lilac:#cdb8ff;--coral:#ff8a9b;--cream:#f7f0ff}
+  *{box-sizing:border-box;margin:0}
+  body{min-height:100vh;padding:3rem 1.5rem;background:var(--deep);color:var(--cream);font-family:'DM Sans',system-ui,sans-serif}
+  main{max-width:1000px;margin:0 auto}
+  h1{font-family:'Unbounded',system-ui,sans-serif;font-size:clamp(2rem,7vw,3.5rem);margin-bottom:.5rem}
+  .sub{color:var(--lilac);margin-bottom:2.5rem}
+  #games{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.25rem}
+  .game{
+    display:block;border-radius:20px;overflow:hidden;background:var(--night);
+    border:2px solid transparent;color:inherit;text-decoration:none;
+    transition:border-color .2s ease,transform .2s ease;
+  }
+  .game:hover,.game:focus-visible{border-color:var(--coral);transform:translateY(-4px)}
+  .game:focus-visible{outline:3px solid var(--cream);outline-offset:3px}
+  .thumb{aspect-ratio:16/10;display:grid;place-items:center;font:700 3rem 'Unbounded',system-ui,sans-serif;color:var(--coral);background:var(--night)}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .game h2{font-size:1.1rem;padding:.9rem 1.1rem 1.1rem}
+  .note{color:var(--lilac);line-height:1.5}
+  .back{display:inline-block;margin-top:2.5rem;color:var(--coral);font-weight:500}
+  @media (prefers-reduced-motion:reduce){.game{transition:none}.game:hover{transform:none}}
+</style>
+</head>
+<body>
+  <main>
+    <h1>Pick a game</h1>
+    <p class="sub">Click a game to start playing.</p>
+    <div id="games"></div>
+    <a class="back" href="index.html">Back to start</a>
+  </main>
+
+<script>
+  // The list of games comes from games.json. To add a game, edit that file.
+  const box = document.getElementById('games');
+  function note(text){
+    const p = document.createElement('p');
+    p.className = 'note'; p.textContent = text;
+    box.replaceWith(p);
+  }
+  fetch('games.json', {cache:'no-store'})
+    .then(r => { if(!r.ok) throw new Error(); return r.json(); })
+    .then(games => {
+      if(!games.length){ note('No games yet. Add one in games.json.'); return; }
+      games.forEach(g => {
+        const a = document.createElement('a');
+        a.className = 'game'; a.href = g.file;
+        const t = document.createElement('div');
+        t.className = 'thumb';
+        const letter = () => { t.textContent = g.name.charAt(0); };
+        if(g.thumb){
+          const img = new Image();
+          img.alt = ''; img.loading = 'lazy'; img.src = g.thumb;
+          img.onerror = () => { img.remove(); letter(); };
+          t.appendChild(img);
+        } else letter();
+        const h = document.createElement('h2');
+        h.textContent = g.name;
+        a.append(t, h);
+        box.appendChild(a);
+      });
+    })
+    .catch(() => note("Couldn't load games.json. Check it for a missing comma or quote, and note this only works on the live site."));
+</script>
+</body>
+</html>
