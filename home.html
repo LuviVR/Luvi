@@ -8,10 +8,14 @@
 <style>
   :root{--deep:#2b1b5c;--night:#1a1236;--lilac:#cdb8ff;--coral:#ff8a9b;--cream:#f7f0ff}
   *{box-sizing:border-box;margin:0}
-  body{min-height:100vh;padding:3rem 1.5rem;background:var(--deep);color:var(--cream);font-family:'DM Sans',system-ui,sans-serif}
+  body{min-height:100vh;padding:5rem 1.5rem 3rem;background:var(--deep);color:var(--cream);font-family:'DM Sans',system-ui,sans-serif}
   main{max-width:1000px;margin:0 auto}
   h1{font-family:'Unbounded',system-ui,sans-serif;font-size:clamp(2rem,7vw,3.5rem);margin-bottom:.5rem}
   .sub{color:var(--lilac);margin-bottom:2.5rem}
+  .top{position:absolute;top:1.2rem;left:1.5rem}
+  .brand{font-family:'Unbounded',system-ui,sans-serif;font-weight:700;font-size:1.05rem;color:var(--cream);text-decoration:none}
+  .brand:hover,.brand:focus-visible{color:var(--coral)}
+  .brand:focus-visible{outline:3px solid var(--cream);outline-offset:4px}
   #games{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.25rem}
   .game{
     display:block;border-radius:20px;overflow:hidden;background:var(--night);
@@ -29,6 +33,7 @@
 </style>
 </head>
 <body>
+  <div class="top"><a class="brand" href="index.html">Luv Games</a></div>
   <main>
     <h1>Pick a game</h1>
     <p class="sub">Click a game to start playing.</p>
@@ -50,7 +55,8 @@
       if(!games.length){ note('No games yet. Add one in games.json.'); return; }
       games.forEach(g => {
         const a = document.createElement('a');
-        a.className = 'game'; a.href = g.file;
+        a.className = 'game';
+        a.href = 'play.html?game=' + encodeURIComponent(g.file) + '&name=' + encodeURIComponent(g.name);
         const t = document.createElement('div');
         t.className = 'thumb';
         const letter = () => { t.textContent = g.name.charAt(0); };
